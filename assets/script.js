@@ -21,16 +21,47 @@ searchBtn.addEventListener('click', function () {
 
 
 // Use input value to get lon and lat for api call
-function getWeather(cityName){
-    
+function getCoordinates(cityName){  
+    var geocodingApiUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=1&appid=${apiKey}`;
+    fetch(geocodingApiUrl)
+    .then(response => response.json())
+    .then(data => callback(data))
+    .catch(error => console.error('Error fetching coordinates:', error));
 };
 
 // Populate the current weather container
+function displayCurrentWeather(data) {
+    currentWeatherContainer.innerHTML = `
+    <h2>${currentWeather.weather[0].description}</h2>
+    <p>Temperature: ${currentWeather.temp}°C</p>
+    <p>Humidity: ${currentWeather.humidity}%</p>
+`;
+}
 
 // Populate the 5 day forecast container 
+function displayForecast(data) {
+    forecastContainer.innerHTML = '';
+    dailyForecast.forEach(day => {
+        forecastContainer.innerHTML += `
+            <div>
+                <h3>${day.weather[0].description}</h3>
+                <p>Temperature: ${day.temp.day}°C</p>
+                <p>Humidity: ${day.humidity}%</p>
+            </div>
+        `;
+    });
+}
 
 // Add input values to search history container
+function addSearchHistory(data) {
+    var listItem = document.createElement('li');
+    listItem.textContent = cityName;
+    searchHistoryContainer.appendChild(listItem);
+}
 
 // Store searched cities to local storage
+function storeCity(data) {
+
+}
 
 // Update page to retrieve local storage to display on search history
